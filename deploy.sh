@@ -3,10 +3,10 @@ set -e
 
 read -p "Enter Domain: " DOMAIN
 
-# Install dependencies
-apt update && apt install -y docker.io docker-compose-plugin nginx certbot python3-certbot-nginx
+# Install only what's missing (certbot + docker) - DO NOT touch nginx
+apt update && apt install -y certbot python3-certbot-nginx docker.io docker-compose-plugin
 
-# Step 1: Create HTTP-only nginx config first (so certbot can verify the domain)
+# Step 1: Write HTTP-only config for this domain (no SSL yet)
 cat << EON > /etc/nginx/sites-available/zte-olt-manager
 server {
     listen 80;
@@ -17,18 +17,17 @@ server {
 }
 EON
 
-# Enable the site (force overwrite if symlink exists)
+# Enable this site only (force overwrite if symlink already exists)
 ln -sf /etc/nginx/sites-available/zte-olt-manager /etc/nginx/sites-enabled/zte-olt-manager
 
-# Reload nginx with HTTP-only config
-systemctl daemon-reload
-systemctl restart nginx
+# Validate config and reload (NOT restart - keeps other domains alive)
+nginx -t && systemctl reload nginx
 
-# Step 2: Obtain SSL certificate (certbot will also update the nginx config)
+# Step 2: Obtain SSL cert - certbot will modify only this domain's config
 certbot --nginx -d $DOMAIN --non-interactive --agree-tos --register-unsafely-without-email
 
-# Reload nginx with the updated SSL config
-systemctl reload nginx
+# Reload nginx to apply SSL config
+nginx -t && systemctl reload nginx
 
 # Step 3: Start the application
 docker compose up -d --build
