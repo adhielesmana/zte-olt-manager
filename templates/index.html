@@ -17,7 +17,8 @@
                 <div class="col-md-3"><label>Card</label><select id="card_type" class="form-select"><option value="GTGH">GTGH (16P)</option><option value="GTGO">GTGO (8P)</option></select></div>
                 <div class="col-md-6"><label>User</label><input type="text" id="username" class="form-control" value="kitanet"></div>
                 <div class="col-md-6"><label>Pass</label><input type="password" id="password" class="form-control" value="tehpoci@2022!"></div>
-                <div class="col-12"><label>ACS URL</label><input type="text" id="acs_url" class="form-control" value="http://oma.maxnetplus.id:7547"></div>
+                <div class="col-md-8"><label>ACS URL</label><input type="text" id="acs_url" class="form-control" value="http://oma.maxnetplus.id:7547"></div>
+                <div class="col-md-4"><label>DNS Server</label><input type="text" id="dns_server" class="form-control" value="103.151.33.1"></div>
             </div>
             <button type="submit" class="btn btn-primary w-100 mt-4">Start Update</button>
         </form>
@@ -31,7 +32,7 @@
     async function updateLog() { const res = await fetch('/log'); const text = await res.text(); document.getElementById('log-content').innerText = text; }
     document.getElementById('oltForm').onsubmit = async (e) => {
         e.preventDefault();
-        const data = { host: document.getElementById('host').value, port: document.getElementById('port').value, username: document.getElementById('username').value, password: document.getElementById('password').value, card_type: document.getElementById('card_type').value, acs_url: document.getElementById('acs_url').value };
+        const data = { host: document.getElementById('host').value, port: document.getElementById('port').value, username: document.getElementById('username').value, password: document.getElementById('password').value, card_type: document.getElementById('card_type').value, acs_url: document.getElementById('acs_url').value, dns_server: document.getElementById('dns_server').value };
         await fetch('/start', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
         setInterval(updateLog, 3000);
     };

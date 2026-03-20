@@ -38,15 +38,17 @@ def run_zte_bulk_update(self, data):
                 for full_id in working_onus:
                     onu_num = full_id.split(':')[-1]
                     with open(LOG_FILE, "a") as f: f.write(f"\nConfiguring {full_id}...")
-                    net_connect.send_config_set([
+                    cmds = [
                         f"pon-onu-mng {full_id}",
                         f"tr069-mgmt 1 acs {data['acs_url']}",
+                        f"tr069-mgmt 1 dns {data['dns_server']}",
                         "tr069-mgmt 1 inform enable",
                         "exit",
                         f"interface gpon-olt_{port_path}",
                         f"onu reboot {onu_num}",
                         "exit"
-                    ], cmd_verify=False)
+                    ]
+                    net_connect.send_config_set(cmds, cmd_verify=False)
                 net_connect.send_command("write", expect_string=prompt)
         with open(LOG_FILE, "a") as f: f.write("\n✅ ALL TASKS COMPLETE.")
         net_connect.disconnect()
