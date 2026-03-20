@@ -6,15 +6,36 @@ read -p "Enter Domain: " DOMAIN
 # Install only what's missing (certbot + docker) - DO NOT reinstall nginx
 apt update && apt install -y certbot python3-certbot-nginx docker.io docker-compose-plugin
 
-# Step 1: Determine port — re-use existing port on updates, auto-detect on first deploy
+# Step 1: Determine port (smart: re-use if free or ours, find new if taken by another app)
+find_free_port() {
+    local PORT=5501
+    while ss -tlnp | grep -q ":$PORT "; do
+        PORT=$((PORT + 1))
+    done
+    echo $PORT
+}
+
+port_owned_by_us() {
+    local PORT=$1
+    # Check if ANY zte-olt-manager container is currently bound to this port
+    docker ps --format "{{.Names}} {{.Ports}}" 2>/dev/null \
+        | grep "zte-olt-manager" \
+        | grep -q ":${PORT}->"
+}
+
 if [ -f .env ] && grep -q "APP_PORT=" .env; then
     APP_PORT=$(grep "APP_PORT=" .env | cut -d'=' -f2)
-    echo "Re-using existing port: $APP_PORT"
+    if ! ss -tlnp | grep -q ":$APP_PORT "; then
+        echo "Re-using port $APP_PORT (currently free)"
+    elif port_owned_by_us "$APP_PORT"; then
+        echo "Re-using port $APP_PORT (owned by this app — will be replaced on restart)"
+    else
+        echo "Port $APP_PORT is taken by another app — finding a new port..."
+        APP_PORT=$(find_free_port)
+        echo "Assigned new port: $APP_PORT"
+    fi
 else
-    APP_PORT=5501
-    while ss -tlnp | grep -q ":$APP_PORT "; do
-        APP_PORT=$((APP_PORT + 1))
-    done
+    APP_PORT=$(find_free_port)
     echo "First deploy — assigned port: $APP_PORT"
 fi
 
