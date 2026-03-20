@@ -1,0 +1,6 @@
+flask
+redis
+celery
+netmiko
+python-dotenv
+requests

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OmniDesk | ZTE OLT Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>body { background-color: #f8f9fa; } .card { border-radius: 15px; }</style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card p-4 shadow">
+        <h2 class="text-center mb-4">🚀 ZTE Bulk Update Dashboard</h2>
+        <form id="oltForm">
+            <div class="row g-3">
+                <div class="col-md-6"><label>IP</label><input type="text" id="host" class="form-control" value="103.151.33.146"></div>
+                <div class="col-md-3"><label>Port</label><input type="number" id="port" class="form-control" value="2202"></div>
+                <div class="col-md-3"><label>Card</label><select id="card_type" class="form-select"><option value="GTGH">GTGH (16P)</option><option value="GTGO">GTGO (8P)</option></select></div>
+                <div class="col-md-6"><label>User</label><input type="text" id="username" class="form-control" value="kitanet"></div>
+                <div class="col-md-6"><label>Pass</label><input type="password" id="password" class="form-control" value="tehpoci@2022!"></div>
+                <div class="col-12"><label>ACS URL</label><input type="text" id="acs_url" class="form-control" value="http://oma.maxnetplus.id:7547"></div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-4">Start Update</button>
+        </form>
+        <div class="mt-4 bg-dark text-success p-3 rounded" style="font-family: monospace; height: 200px; overflow-y: auto;">
+            <h6>> Live Console:</h6>
+            <div id="log-content">System Idle...</div>
+        </div>
+    </div>
+</div>
+<script>
+    async function updateLog() { const res = await fetch('/log'); const text = await res.text(); document.getElementById('log-content').innerText = text; }
+    document.getElementById('oltForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const data = { host: document.getElementById('host').value, port: document.getElementById('port').value, username: document.getElementById('username').value, password: document.getElementById('password').value, card_type: document.getElementById('card_type').value, acs_url: document.getElementById('acs_url').value };
+        await fetch('/start', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
+        setInterval(updateLog, 3000);
+    };
+</script>
+</body>
+</html>
