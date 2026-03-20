@@ -2,37 +2,192 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>OmniDesk | ZTE OLT Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTE OLT Manager | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>body { background-color: #f8f9fa; } .card { border-radius: 15px; }</style>
+    <style>
+        body { background: #f0f2f5; font-family: 'Inter', sans-serif; }
+        .navbar-top {
+            background: linear-gradient(90deg, #0f0c29, #302b63);
+            padding: 14px 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar-top .brand { color: #fff; font-weight: 700; font-size: 17px; }
+        .navbar-top .brand span { color: #48cfad; }
+        .btn-logout {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+            padding: 6px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover { background: rgba(255,80,80,0.3); color: #fff; }
+        .main-card {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            padding: 36px;
+            margin-top: 32px;
+        }
+        h2 { font-weight: 700; font-size: 22px; color: #1a1a2e; }
+        label { font-weight: 600; font-size: 12px; color: #555; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 1.5px solid #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            padding: 10px 14px;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #6c63ff;
+            box-shadow: 0 0 0 3px rgba(108,99,255,0.12);
+        }
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c63ff;
+            margin: 24px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .btn-start {
+            background: linear-gradient(90deg, #6c63ff, #48cfad);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            padding: 14px;
+            width: 100%;
+            margin-top: 24px;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+        .btn-start:hover { opacity: 0.9; transform: translateY(-1px); }
+        .console-box {
+            background: #0d1117;
+            color: #39d353;
+            border-radius: 12px;
+            padding: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            height: 220px;
+            overflow-y: auto;
+            margin-top: 24px;
+            line-height: 1.6;
+        }
+        .console-box .console-header { color: #8b949e; font-size: 11px; margin-bottom: 8px; }
+        .hint { font-size: 11px; color: #aaa; margin-top: 4px; }
+    </style>
 </head>
 <body>
-<div class="container mt-5">
-    <div class="card p-4 shadow">
-        <h2 class="text-center mb-4">🚀 ZTE Bulk Update Dashboard</h2>
+
+<nav class="navbar-top">
+    <span class="brand">🛰️ ZTE OLT <span>Manager</span></span>
+    <a href="/logout" class="btn-logout">⎋ Logout</a>
+</nav>
+
+<div class="container" style="max-width: 860px;">
+    <div class="main-card">
+        <h2>🚀 Bulk TR-069 Update</h2>
+        <p class="text-muted" style="font-size:13px; margin-top:4px;">Configure all working ONTs across selected cards automatically.</p>
+
         <form id="oltForm">
+            <div class="section-title">OLT Connection</div>
             <div class="row g-3">
-                <div class="col-md-6"><label>IP</label><input type="text" id="host" class="form-control" value="103.151.33.146"></div>
-                <div class="col-md-3"><label>Port</label><input type="number" id="port" class="form-control" value="2202"></div>
-                <div class="col-md-3"><label>Card</label><select id="card_type" class="form-select"><option value="GTGH">GTGH (16P)</option><option value="GTGO">GTGO (8P)</option></select></div>
-                <div class="col-md-6"><label>User</label><input type="text" id="username" class="form-control" value="kitanet"></div>
-                <div class="col-md-6"><label>Pass</label><input type="password" id="password" class="form-control" value="tehpoci@2022!"></div>
-                <div class="col-md-8"><label>ACS URL</label><input type="text" id="acs_url" class="form-control" value="http://oma.maxnetplus.id:7547"></div>
-                <div class="col-md-4"><label>DNS Server</label><input type="text" id="dns_server" class="form-control" value="103.151.33.1"></div>
+                <div class="col-md-5">
+                    <label>IP Address</label>
+                    <input type="text" id="host" class="form-control" value="103.151.33.146">
+                </div>
+                <div class="col-md-2">
+                    <label>Port</label>
+                    <input type="number" id="port" class="form-control" value="2202">
+                </div>
+                <div class="col-md-2">
+                    <label>Card Type</label>
+                    <select id="card_type" class="form-select">
+                        <option value="GTGH">GTGH (16P)</option>
+                        <option value="GTGO">GTGO (8P)</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>No. of Cards</label>
+                    <select id="num_cards" class="form-select">
+                        <option value="1">1 Card</option>
+                        <option value="2" selected>2 Cards</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label>Username</label>
+                    <input type="text" id="username" class="form-control" value="kitanet">
+                </div>
+                <div class="col-md-6">
+                    <label>Password</label>
+                    <input type="password" id="password" class="form-control" value="tehpoci@2022!">
+                </div>
             </div>
-            <button type="submit" class="btn btn-primary w-100 mt-4">Start Update</button>
+
+            <div class="section-title">TR-069 Settings</div>
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <label>ACS URL</label>
+                    <input type="text" id="acs_url" class="form-control" value="http://oma.maxnetplus.id:7547">
+                </div>
+                <div class="col-md-5">
+                    <label>DNS Server</label>
+                    <input type="text" id="dns_server" class="form-control" value="103.151.33.1">
+                </div>
+                <div class="col-md-4">
+                    <label>ACS Inform Interval</label>
+                    <input type="number" id="acs_inform_interval" class="form-control" value="30" min="1" max="1440">
+                    <div class="hint">Minutes between ONT → ACS check-ins</div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-start">⚡ Start Bulk Update</button>
         </form>
-        <div class="mt-4 bg-dark text-success p-3 rounded" style="font-family: monospace; height: 200px; overflow-y: auto;">
-            <h6>> Live Console:</h6>
+
+        <div class="console-box">
+            <div class="console-header">&gt; Live Console</div>
             <div id="log-content">System Idle...</div>
         </div>
     </div>
 </div>
+
 <script>
-    async function updateLog() { const res = await fetch('/log'); const text = await res.text(); document.getElementById('log-content').innerText = text; }
+    async function updateLog() {
+        const res = await fetch('/log');
+        const text = await res.text();
+        const el = document.getElementById('log-content');
+        el.innerText = text;
+        el.parentElement.scrollTop = el.parentElement.scrollHeight;
+    }
+
     document.getElementById('oltForm').onsubmit = async (e) => {
         e.preventDefault();
-        const data = { host: document.getElementById('host').value, port: document.getElementById('port').value, username: document.getElementById('username').value, password: document.getElementById('password').value, card_type: document.getElementById('card_type').value, acs_url: document.getElementById('acs_url').value, dns_server: document.getElementById('dns_server').value };
+        document.getElementById('log-content').innerText = 'Starting update...';
+        const data = {
+            host: document.getElementById('host').value,
+            port: document.getElementById('port').value,
+            username: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            card_type: document.getElementById('card_type').value,
+            num_cards: document.getElementById('num_cards').value,
+            acs_url: document.getElementById('acs_url').value,
+            dns_server: document.getElementById('dns_server').value,
+            acs_inform_interval: document.getElementById('acs_inform_interval').value
+        };
         await fetch('/start', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
         setInterval(updateLog, 3000);
     };

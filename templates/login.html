@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZTE OLT Manager — Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            background: rgba(255,255,255,0.07);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 20px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            animation: fadeUp 0.5s ease;
+        }
+        @keyframes fadeUp {
+            from { opacity:0; transform: translateY(24px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo .icon {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .logo h1 {
+            color: #fff;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .logo p {
+            color: rgba(255,255,255,0.45);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(90deg, #6c63ff, #48cfad);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-top: 8px;
+        }
+        label {
+            display: block;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 8px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 13px 16px;
+            color: #fff;
+            font-size: 15px;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            margin-bottom: 20px;
+        }
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #6c63ff;
+            background: rgba(108,99,255,0.12);
+        }
+        input::placeholder { color: rgba(255,255,255,0.25); }
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #6c63ff, #48cfad);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.15s;
+            margin-top: 4px;
+        }
+        .btn-login:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-login:active { transform: translateY(0); }
+        .error {
+            background: rgba(255, 80, 80, 0.15);
+            border: 1px solid rgba(255,80,80,0.35);
+            color: #ff8a8a;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            color: rgba(255,255,255,0.2);
+            font-size: 11px;
+            margin-top: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">
+            <span class="icon">🛰️</span>
+            <h1>ZTE OLT Manager</h1>
+            <p>TR-069 Bulk Configuration Tool</p>
+            <span class="badge">Superadmin Access</span>
+        </div>
+
+        {% if error %}
+        <div class="error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        <form method="POST" action="/login">
+            <label>Username</label>
+            <input type="text" name="username" id="username" placeholder="Enter username" autocomplete="off" required>
+
+            <label>Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter password" required>
+
+            <button type="submit" class="btn-login">Sign In →</button>
+        </form>
+
+        <div class="footer">maxnetplus.id &nbsp;·&nbsp; ZTE OLT Manager v1.0</div>
+    </div>
+</body>
+</html>
