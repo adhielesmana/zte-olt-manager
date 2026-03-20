@@ -6,14 +6,19 @@ read -p "Enter Domain: " DOMAIN
 # Install only what's missing (certbot + docker) - DO NOT reinstall nginx
 apt update && apt install -y certbot python3-certbot-nginx docker.io docker-compose-plugin
 
-# Step 1: Auto-detect a free port starting from 5501
-APP_PORT=5501
-while ss -tlnp | grep -q ":$APP_PORT "; do
-    APP_PORT=$((APP_PORT + 1))
-done
-echo "Using port: $APP_PORT"
+# Step 1: Determine port — re-use existing port on updates, auto-detect on first deploy
+if [ -f .env ] && grep -q "APP_PORT=" .env; then
+    APP_PORT=$(grep "APP_PORT=" .env | cut -d'=' -f2)
+    echo "Re-using existing port: $APP_PORT"
+else
+    APP_PORT=5501
+    while ss -tlnp | grep -q ":$APP_PORT "; do
+        APP_PORT=$((APP_PORT + 1))
+    done
+    echo "First deploy — assigned port: $APP_PORT"
+fi
 
-# Save port to .env so docker-compose picks it up
+# Save/update .env
 echo "APP_PORT=$APP_PORT" > .env
 
 # Step 2: Remove any broken/leftover config for this domain to start clean
