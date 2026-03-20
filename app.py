@@ -47,7 +47,8 @@ def logout():
 
 # ------------------------------------
 
-LOG_FILE = "update_progress.log"
+LOG_FILE = "/app/logs/update_progress.log"
+os.makedirs("/app/logs", exist_ok=True)
 
 @celery.task(bind=True)
 def run_zte_bulk_update(self, data):
